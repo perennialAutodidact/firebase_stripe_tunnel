@@ -34,7 +34,7 @@ If you've already got a Firebase project setup, you can jump to [Stripe Setup](#
 
 Go into the Google Console and create a new project. Cloud functions are only available with the "Pay-as-You-Go" plan, so upgrade the project to use a Blaze plan.
 
-![blaze plan](./screenshots//blaze.png)
+![blaze plan](./screenshots/firebase/blaze.png)
 
 I'll be using the latest Node LTS release, `16.18.0`, via `nvm`.
 
@@ -62,7 +62,7 @@ $ cd firebase_stripe_tunnel
 
 On the Firebase console homepage for the project, go through the steps to add Firebase to a web app.
 
-![add app in firebase console](./screenshots/add-app-in-firebase-console.png)
+![add app in firebase console](./screenshots/firebase/add-app-in-firebase-console.png)
 
 After giving a nickname for the app, install the Firebase SDK.
 
@@ -111,7 +111,7 @@ $ cd functions && npm i stripe
 
 Sign up for Stripe and create a new account. I've called mine "Firebase Stripe Tunnel".
 
-![create stripe account](./screenshots/create-stripe-account.png)
+![create stripe account](./screenshots/stripe/create-account.png)
 
 Install the [Stripe CLI](https://stripe.com/docs/stripe-cli#install) and log in.
 
@@ -156,6 +156,10 @@ The [`--print-secret`](https://stripe.com/docs/cli/listen#listen-print-secret) f
 > **Note**: The CLI signing secret will be _different_ each time you log in with the CLI, so this value will have to be updated in `.env` to test webhooks locally.
 
 While we're at it, let's add a few more environment variables. One for the Stripe secret key provided on the Stripe dashboard, one for the webhook signing secret for our production environment (we'll fill this in later) and one to indicate that we're in a development environment
+
+The Stripe secret key found on the Stripe dashboard will also be set as an environment variable so it can be used in the cloud functions.
+
+![stripe secret key](./screenshots//stripe/secret-key.png)
 
 ```
 NODE_ENV=DEVELOPMENT
@@ -311,7 +315,7 @@ $ curl -X POST http://localhost:5001/fir-stripe-tunnel/us-central1/createPayment
 
 Sweet! Our function is working! If we check the Stripe dashboard in the Payments section, we should see the Payment Intent we just created and that the amount and ID match those returned in the terminal.
 
-![curl payment intent created](./screenshots/payment-intent-created-curl.png)
+![curl payment intent created](./screenshots/stripe/payment-intents/0-curl-created.png)
 
 Breaking down the command:
 
@@ -634,19 +638,19 @@ export default Form;
 
 If all goes according to plan, the form should now be able to create and complete the Payment Intent process.
 
-![payment intent created ui](./screenshots/payment-intent-created-ui.gif)
+![ui create payment intent 1](./screenshots/ui/1-payment-intent-created.gif)
 
 Check the Stripe dashboard to see if the Payment Intent got created
 
-![stripe payment intent created ui](./screenshots/stripe-payment-intent-created-ui.png)
+![stripe dashboard payment intent 1 created](./screenshots/stripe/payment-intents/1-ui-created.png)
 
 Then fill out the form and click submit to complete the Payment Intent
 
-![payment intent confirmed ui](./screenshots/payment-intent-succeeded-ui.gif)
+![ui succeeded payment intent 1](./screenshots/ui/1-payment-intent-succeeded.gif)
 
 Check the Stripe dashboard to see if the Payment Intent got completed
 
-![stripe payment intent confirmed ui](./screenshots/stripe-payment-intent-succeeded-ui.png)
+![stripe dashboard payment intent 1 succeeded](./screenshots/stripe/payment-intents/1-ui-succeeded.png)
 
 Great! Now it's time to send the Stripe events to a Firebase cloud function.
 
@@ -797,9 +801,9 @@ Make sure the signing secret that is printed in the terminal is stored in the en
 
 Heading back to the browser, let's make another Payment Intent.
 
-![payment intent created ui 2](./screenshots/payment-intent-created-ui-2.gif)
+![ui create payment intent 2](./screenshots/ui/2-payment-intent-created.gif)
 
-![stripe payment intent created ui 2](./screenshots/stripe-payment-intent-created-ui-2.png)
+![stripe dashboard payment intent 2 created](./screenshots/stripe/payment-intents/2-ui-created.png)
 
 Checking the Stripe CLI, we'll see that not only did the `payment_intent.created` event get triggered, but also that our `handleStripeEvent` function was called through the `localtunnel` URL.
 
@@ -810,38 +814,38 @@ Checking the Stripe CLI, we'll see that not only did the `payment_intent.created
 
 If we check the Firebase emulator logs at [http://localhost:4000/logs](http://localhost:4000/logs)
 
-![payment intent created firebase logs](./screenshots/payment-intent-created-firebase-logs.png)
+![firebase logs payment intent 1 created](./screenshots/firebase/logs/1-payment-intent-created.png)
 
 Hooray! There is a ton of information stored inside the `event` object passed from Stripe including any `metadata` included in the Payment Intent when it was created.
 
 If we complete the Payment Intent
 
-![payment intent completed](./screenshots/payment-intent-succeeded-ui-2.gif)
+![ui succeeded payment intent 2](./screenshots/ui/2-payment-intent-succeeded.gif)
 
 Stripe
 
-![stripe payment intent complete](./screenshots/stripe-payment-intent-succeeded-ui-2.png)
+![stripe payment intent complete](./screenshots/stripe/payment-intents/2-ui-succeeded.png)
 
 Firebase emulator logs
-![firebase logs 2](./screenshots/payment-intent-succeeded-firebase-logs.png)
+![firebase logs 2](./screenshots/firebase/logs/1-payment-intent-created-succeeded.png)
 
 Awesome!
 
 Let's try once more with canceling a Payment Intent
 
-![payment intent 3 creation](./screenshots/payment-intent-created-ui-3.gif)
+![payment intent 3 creation](./screenshots/ui/3-payment-intent-created.gif)
 Stripe Dashboard
 
-![payment intent 3 stripe dashboard](./screenshots/stripe-payment-intent-created-ui-3.png)
+![payment intent 3 created stripe dashboard](./screenshots/stripe/payment-intents/3-ui-created.png)
 
 Cancel the Payment Intent
-![payment intent 3 cancelled](./screenshots/payment-intent-canceled-ui-3.gif)
+![payment intent 3 cancelled](./screenshots/ui/3-payment-intent-canceled.gif)
 
 Stripe Dashboard
-![payment intent 3 canceled stripe dashboard](./screenshots/stripe-payment-intent-canceled-ui-3.png))
+![payment intent 3 canceled stripe dashboard](./screenshots/stripe/payment-intents/3-ui-canceled.png))
 
 Firebase emulator logs
-![firebase logs payment intent created and canceled](./screenshots/firebase-logs-payment-intent-created-canceled.png)
+![firebase logs payment intent created and canceled](./screenshots/firebase/logs/2-payment-intent-created-canceled.png)
 
 ## Final Thoughts
 
