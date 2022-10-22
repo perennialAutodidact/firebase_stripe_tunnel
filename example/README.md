@@ -47,7 +47,6 @@ The product form will create and update Payment Intents and the checkout form wi
 Check the emulator logs after each of the following:
 
 1. Select at least one product and click "Submit".
-2. Go back to the product form, change the payment amount and click "Submit".
 3. Click "Cancel" from the checkout form.
 4. Fill in the checkout form completely with card number `4242 4242 4242 4242`, and arbitrary values for the other fields. Click "Submit."
 
