@@ -14,10 +14,6 @@ const Products = () => {
   // create a callable verison of the createPaymentIntent cloud function
   const createPaymentIntent = useHttpsCallable("createPaymentIntent");
 
-  const stripeLoading = useMemo(
-    () => createPaymentIntent.loading,
-    [createPaymentIntent]
-  );
   const submitHandler = async (formData) => {
     // add up the product totals
     const amount = products.reduce(
@@ -42,7 +38,7 @@ const Products = () => {
     <Form
       products={products}
       submitHandler={submitHandler}
-      stripeLoading={stripeLoading}
+      stripeLoading={createPaymentIntent.loading}
     />
   );
 };

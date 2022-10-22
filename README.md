@@ -161,15 +161,23 @@ The [`--print-secret`](https://stripe.com/docs/cli/listen#listen-print-secret) f
 
 While we're at it, let's add a few more environment variables. One for the Stripe secret key provided on the Stripe dashboard, one for the webhook signing secret for our production environment (we'll fill this in later) and one to indicate that we're in a development environment
 
-The Stripe secret key found on the Stripe dashboard will also be set as an environment variable so it can be used in the cloud functions.
+The Stripe secret key found on the Stripe dashboard will also be set as an environment variable so it can be used in the cloud functions. While we're here, let's grab the Publishable Key and store it in `src/.env.local` to use in th UI later.
 
 ![stripe secret key](./screenshots/stripe/secret-key.png)
+
+### functions/.env
 
 ```
 NODE_ENV=DEVELOPMENT
 STRIPE_SECRET_KEY=sk_test_51LuTBdIO...
 STRIPE_HANDLE_EVENT_SECRET_DEVELOPMENT=whsec_
 STRIPE_HANDLE_EVENT_SECRET_PRODUCTION=""
+```
+
+### src/.env.local
+
+```
+REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_51LuTBdIOzy...
 ```
 
 The environment variable names are arbitrary, but will be used in the cloud function to dynamically load the key based on the value of `NODE_ENV`.
@@ -227,9 +235,10 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 admin.initializeApp();
 
 exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
+  const { amount } = data;
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: data.amount,
+      amount,
       currency: "usd",
       automatic_payment_methods: { enabled: true },
     });
@@ -240,6 +249,7 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
     return {
       id,
       clientSecret,
+      amount,
       message: "Created",
     };
   } catch (error) {
@@ -316,6 +326,7 @@ $ curl -X POST http://localhost:5001/fir-stripe-tunnel/us-central1/createPayment
   "result": {
     "id" : "pi_3Lufb2IOzyVC3iQp1iJYuADC",
     "clientSecret" : "pi_3Lufb..._secret_hYJsX..."
+    "amount": 999,
     "message": "Created"
   }
 }
@@ -373,7 +384,7 @@ Install dependencies.
 $ npm i @stripe/react-stripe-js @stripe/stripe-js react-router-dom react-hook-form
 ```
 
-We'll need to add the Stripe publishable key to `src/.env.local`.
+We'll need to add the Stripe publishable key to `src/.env.local` if it wasn't added earlier.
 
 ```
 REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_51LuTBdI...
@@ -439,6 +450,7 @@ A reusable hook called `useHttpsCallable` will be used for calling the cloud fun
 - `call` - A version of the function that's callable within the app
 
 ```javascript
+/* src/hooks/useHttpsCallable.js */
 import { useState } from "react";
 import { functions } from "../firebase/client";
 import { httpsCallable } from "firebase/functions";
@@ -491,10 +503,6 @@ const Products = () => {
   // create callable version of the createPaymentIntent cloud function
   const createPaymentIntent = useHttpsCallable("createPaymentIntent");
 
-  const stripeLoading = useMemo(
-    () => createPaymentIntent.loading,
-    [createPaymentIntent]
-  );
   const submitHandler = async (formData) => {
     // add up the product totals
     const amount = products.reduce(
@@ -516,7 +524,10 @@ const Products = () => {
   return !products || loadingProducts ? (
     "Loading products..."
   ) : (
-    <Form submitHandler={submitHandler} stripeLoading={stripeLoading} />
+    <Form
+      submitHandler={submitHandler}
+      stripeLoading={createPaymentIntent.loading}
+    />
   );
 };
 
@@ -771,9 +782,14 @@ exports.handleStripeEvent = functions.https.onRequest((req, res) => {
         paymentIntent = event.data.object;
         functions.logger.log("Payment Intent Created", paymentIntent.id);
         break;
-
-      // handle other intent event types
-
+      case "payment_intent.succeeded":
+        paymentIntent = event.data.object;
+        functions.logger.log("Payment Intent Succeeded", paymentIntent.id);
+        break;
+      case "payment_intent.canceled":
+        paymentIntent = event.data.object;
+        functions.logger.log("Payment Intent Cancelled", paymentIntent.id);
+        break;
       default:
         functions.logger.log("Unhandled event type", event.type);
         break;
