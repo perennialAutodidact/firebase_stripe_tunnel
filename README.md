@@ -103,6 +103,8 @@ If the CLI asks you if you want to install the Functions emulator, say yes, as w
 
 ## Setup Stripe
 
+[Back to top](#table-of-contents)
+
 Navigate into the `functions` folder created after initiallizing Firebase functions and install Stripe as a dependency.
 
 ```
