@@ -36,6 +36,23 @@ Run the functions emulator using your project name.
 $ firebase emulators:start --only functions --project <YOUR_PROJECT_NAME>
 ```
 
+### Run localtunnel
+
+Run `localtunnel` through `npx`, specifying the port number the Firebase emulator is using for functions. 
+```
+$ npx localtunnel --port 5001
+```
+
+Copy the URL provided by `localtunnel`
+
+### Run the Stripe CLI
+
+Use the `--forward-to` flag to tell Stripe to send the triggered events to the Firebase function running on the emulator.
+
+```
+$ stripe listen --forward-to https://<LOCAL_TUNNEL_URL>.lt/<FIREBASE_PROJECT_NAME>/us-central1/handleStripeEvent
+```
+
 ### Run the project
 
 ```
