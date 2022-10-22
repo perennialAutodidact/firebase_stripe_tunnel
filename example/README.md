@@ -16,7 +16,11 @@ $ npm install
 
 ### Configure Firebase
 
-Create a file called `.env.local` in the `src` folder and add the values from your Firebase project using the variable names that are in `src/firebase/client.js`.
+Create a file called `.env.local` in the `src` folder and add the values from your Firebase project using the variable names that are in `src/firebase/client.js` and also store the Stripe Publishable Key in a variable called `REACT_APP_STRIPE_PUBLISHABLE_KEY`. In the `functions` folder, create a file called `.env` and create environment variables:
+- `NODE_ENV` - Either `DEVELOPMENT` for testing locally or `PRODUCTION` for the deployed app.
+- `STRIPE_SECRET_KEY` - The Secret Key from your Stripe Account.
+- `STRIPE_HANDLE_EVENT_SECRET_DEVELOPMENT` - The event signing secret provided by the Stripe CLI when `stripe listen` is run. This will change each time the user logs in to the Stripe CLI with `stripe login`
+- `STRIPE_HANDLE_EVENT_SECRET_PRODUCTION` - If the app is deployed, this will be the webhook secret provided in the Stripe Dashboard when the webhook is created.
 
 ### Firebase Emulator
 
