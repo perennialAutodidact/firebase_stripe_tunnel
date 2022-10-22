@@ -163,7 +163,7 @@ While we're at it, let's add a few more environment variables. One for the Strip
 
 The Stripe secret key found on the Stripe dashboard will also be set as an environment variable so it can be used in the cloud functions.
 
-![stripe secret key](./screenshots//stripe/secret-key.png)
+![stripe secret key](./screenshots/stripe/secret-key.png)
 
 ```
 NODE_ENV=DEVELOPMENT
