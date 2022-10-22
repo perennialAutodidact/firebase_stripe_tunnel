@@ -1,0 +1,23 @@
+.checkoutForm {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.submitButton {
+  padding: 10px;
+}
+
+.cancelLink {
+  color: black;
+  text-decoration: none;
+}
+
+.cancelLink:hover {
+  color: darkgray;
+  text-decoration: underline;
+}
+
+.error {
+  color: crimson;
+}

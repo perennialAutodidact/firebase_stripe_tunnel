@@ -1,0 +1,22 @@
+.navbar {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+
+.navbar ul {
+  display: flex;
+  gap: 25px;
+  list-style: none;
+  padding: 0;
+}
+
+.navLink {
+  color: black;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: darkgray;
+  text-decoration: underline;
+}

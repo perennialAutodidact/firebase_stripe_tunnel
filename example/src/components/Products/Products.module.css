@@ -1,0 +1,34 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.productField {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
+
+.thumbnail {
+  width: 75px;
+}
+
+.productInfo {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.form input {
+  width: 30px;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.submitButton {
+  padding: 10px;
+}

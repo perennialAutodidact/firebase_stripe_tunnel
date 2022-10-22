@@ -1,0 +1,19 @@
+.container {
+  text-align: center;
+}
+
+.container h3 {
+  margin-top: 0;
+}
+
+.Created {
+  color: green;
+}
+
+.Updated {
+  color: blueviolet;
+}
+
+.Canceled {
+  color: red;
+}
