@@ -147,6 +147,8 @@ Checking the terminal instance where the Stripe CLI is listening, we should see 
 
 ## Environment Variables
 
+[Back to top](#table-of-contents)
+
 The CLI also provides a signing secret to validate the events. Let's save this as an environment variable inside the `functions` folder. Inside the `functions` folder, run:
 
 ```
@@ -175,6 +177,8 @@ The environment variable names are arbitrary, but will be used in the cloud func
 Right now the connection is only between Stripe and the local terminal instance. Let's create a cloud function to create a Payment Intent.
 
 ## Payment Intent Cloud Function
+
+[Back to top](#table-of-contents)
 
 As mentioned in the introduction for this post, the process for creating and manipulating Stripe Payment Intents will follow the Node.js examples from [this guide](https://stripe.com/docs/payments/accept-a-payment?platform=web&ui=elements).
 
@@ -249,6 +253,8 @@ We'll pass the `amount` for the payment **as an integer** when call the function
 The `clientSecret` will be used in React to render the Stripe Payment Elements that will process the payment.
 
 ## Firebase Functions Emulator
+
+[Back to top](#table-of-contents)
 
 Let's spin up the Firebase emulator to test our function. For now we'll only be running the functions emulator, but other emulators will need to be started as other features are added to the project such as authentication, storage or Firestore.
 
@@ -354,6 +360,8 @@ exports.cancelPaymentIntent = functions.https.onCall(async (data, context) => {
 ```
 
 ## React UI
+
+[Back to top](#table-of-contents)
 
 We don't want to interact with our cloud functions using `curl`, so let's build a minimal UI to trigger our Payment Intent events. If you already have UI are just interested in handling Stripe events using a cloud function in the Firebase emulator, skip to [Setting Up `localtunnel`](#setting-up-localtunnel).
 
@@ -658,6 +666,8 @@ Great! Now it's time to send the Stripe events to a Firebase cloud function.
 
 ## Stripe Event Cloud Function
 
+[Back to top](#table-of-contents)
+
 ```javascript
 /* functions/index.js */
 
@@ -783,6 +793,8 @@ Once everything is set up, the `functions.logger.log()` statements will output i
 
 ## Localtunnel
 
+[Back to top](#table-of-contents)
+
 `localtunnel` can be installed globally or as a project dependency, but we'll run it using `npx`.
 
 ```
@@ -850,5 +862,7 @@ Firebase emulator logs
 ![firebase logs payment intent created and canceled](./screenshots/firebase/logs/2-payment-intent-created-canceled.png)
 
 ## Final Thoughts
+
+[Back to top](#table-of-contents)
 
 I hope this helps someone make the connection between Firebase cloud functions and Stripe webhooks in the local environment. Thanks for reading!
